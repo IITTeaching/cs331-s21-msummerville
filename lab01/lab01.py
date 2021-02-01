@@ -62,19 +62,15 @@ def test2():
 # EXERCISE 3
 #################################################################################
 def integer_right_triangles(p):
-    saved = []
-    if p % 2 != 0:
-        return 0
+# two sides greater than the third for all sides, pythagorean theorem works, and they add to 60
     numTriangles = 0
-    for i in range(1, p // 2):
-        formula = p / 2 * ((p - 2 * i) / (p - i))
-        integer = int(formula)
-        if(formula == integer):
-            answer = tuple(sorted((integer, i)))
-            if answer not in saved:
-                numTriangles += 1
-                saved.append(answer)
+    for a in range(1,p):
+        for b in range(a, p):
+            for c in range(b, p):
+                if(a + b + c == p and (a + b > c and  b + c > a and a + c > b) and ((a ** 2) + (b ** 2) == (c ** 2) or (b ** 2) + (c ** 2) == (a ** 2) or (a ** 2) + (c ** 2) == (b ** 2))):
+                    numTriangles +=1
     return numTriangles
+
 def test3():
     tc = unittest.TestCase()
     tc.assertEqual(integer_right_triangles(60), 2)
@@ -87,7 +83,19 @@ def test3():
 
 # implement this function
 def gen_pattern(chars):
-    pass
+    size = len(chars)
+    fronttoback = chars 
+    backtofront = chars[::-1]
+    middle = []
+    
+    for i in range(1, size+1):
+        positionnow = backtofront[0:i] + fronttoback[size-i+1:size]
+        positionnow = '.'.join(positionnow)
+        positionnow = positionnow.center(size * 4 - 3, ".")
+        middle.append(positionnow)
+        print(positionnow)
+    for i in range(2, size+1):
+        print(middle[-i])
 
 def test4():
     tc = unittest.TestCase()
