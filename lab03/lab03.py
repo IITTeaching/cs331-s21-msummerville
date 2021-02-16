@@ -132,18 +132,20 @@ def test1_5():
 class PrefixSearcher():
 
     savedlst = []
-
+    savedn = 0
     def __init__(self, document, k):
         """
         Initializes a prefix searcher using a document and a maximum
         search string length k.
         """
+        
         lst = []
         comparereqs = lambda x,y: 0 if x[-1] == y[-1] else (-1 if x[-1] < y[-1] else 1)
         for i in range(len(document)):
             lst.append(document[i:i+k])
         lst = mysort(lst, comparereqs)
         self.savedlst = lst
+        self.savedn = k
     def search(self, q):
         """
         Return true if the document contains search string q (of
@@ -154,7 +156,7 @@ class PrefixSearcher():
         for i in range(0, len(self.savedlst)):
             if(self.savedlst[i] == q):
                 return True
-            if(len(q) > len(self.savedlst[i])):
+            if(len(q) > self.savedn):
                 raise Exception("Length of Q > Than Length of N")
         return False
 
@@ -175,7 +177,7 @@ def test2_1():
     tc.assertFalse(p.search("Z"))
     tc.assertFalse(p.search("Y"))
     p2 = PrefixSearcher("Hello World!", 2)
-    tc.assertTrue(p2.search("l"))
+    tc.assertTrue(p2.search("lo"))
     tc.assertTrue(p2.search("ll"))
     tc.assertFalse(p2.search("lW"))
 
