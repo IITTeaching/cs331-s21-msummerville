@@ -17,7 +17,18 @@ def mysort(lst: List[T], compare: Callable[[T, T], int]) -> List[T]:
     right element, 1 if the left is larger than the right, and 0 if the two
     elements are equal.
     """
-    pass
+    for i in range(0, len(lst)):
+        temp = lst[i]
+        min_index = None
+        for j in range(i+1,len(lst)):
+            comparetemp = lst[j]
+            if(compare(comparetemp,temp) < 0):
+                min_index = j
+        if(min_index != None):
+            savedcomparetemp = lst[min_index]
+            lst[min_index] = temp
+            lst[i] = savedcomparetemp
+    return lst
 
 def mybinsearch(lst: List[T], elem: S, compare: Callable[[T, S], int]) -> int:
     """
@@ -27,7 +38,20 @@ def mybinsearch(lst: List[T], elem: S, compare: Callable[[T, S], int]) -> int:
     position of the first (leftmost) match for elem in lst. If elem does not
     exist in lst, then return -1.
     """
-    pass
+    top = len(lst) - 1
+    bottom = 0
+    mid = 0
+    while bottom <= top:
+
+        mid = (top + bottom) // 2
+
+        if(compare(lst[mid],elem) < 0):
+            bottom = mid + 1
+        elif(compare(lst[mid],elem) > 0):
+            top = mid - 1
+        else:
+            return mid
+    return -1
 
 class Student():
     """Custom class to test generic sorting and searching."""
@@ -107,13 +131,19 @@ def test1_5():
 #################################################################################
 class PrefixSearcher():
 
+    savedlst = []
+
     def __init__(self, document, k):
         """
         Initializes a prefix searcher using a document and a maximum
         search string length k.
         """
-        pass
-
+        lst = []
+        comparereqs = lambda x,y: 0 if x[-1] == y[-1] else (-1 if x[-1] < y[-1] else 1)
+        for i in range(len(document)):
+            lst.append(document[i:i+k])
+        lst = mysort(lst, comparereqs)
+        self.savedlst = lst
     def search(self, q):
         """
         Return true if the document contains search string q (of
@@ -121,7 +151,12 @@ class PrefixSearcher():
         length up to n). If q is longer than n, then raise an
         Exception.
         """
-        pass
+        for i in range(0, len(self.savedlst)):
+            if(self.savedlst[i] == q):
+                return True
+            if(len(q) > len(self.savedlst[i])):
+                raise Exception("Length of Q > Than Length of N")
+        return False
 
 # 30 Points
 def test2():
@@ -139,10 +174,10 @@ def test2_1():
     tc.assertFalse(p.search("h"))
     tc.assertFalse(p.search("Z"))
     tc.assertFalse(p.search("Y"))
-    p = PrefixSearcher("Hello World!", 2)
-    tc.assertTrue(p.search("l"))
-    tc.assertTrue(p.search("ll"))
-    tc.assertFalse(p.search("lW"))
+    p2 = PrefixSearcher("Hello World!", 2)
+    tc.assertTrue(p2.search("l"))
+    tc.assertTrue(p2.search("ll"))
+    tc.assertFalse(p2.search("lW"))
 
 # 20 Points
 def test2_2():
