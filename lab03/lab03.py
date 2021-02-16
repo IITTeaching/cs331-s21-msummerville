@@ -19,12 +19,13 @@ def mysort(lst: List[T], compare: Callable[[T, T], int]) -> List[T]:
     """
     for i in range(0, len(lst)):
         temp = lst[i]
-        min_index = None
+        min_index = -1
         for j in range(i+1,len(lst)):
             comparetemp = lst[j]
             if(compare(comparetemp,temp) < 0):
-                min_index = j
-        if(min_index != None):
+                if(min_index == -1 or lst[min_index] > lst[j]):
+                    min_index = j
+        if(min_index != -1):
             savedcomparetemp = lst[min_index]
             lst[min_index] = temp
             lst[i] = savedcomparetemp
@@ -71,7 +72,7 @@ def test1():
     test1_3()
     test1_4()
     test1_5()
-
+    test1_6()
 # 6 Points
 def test1_1():
     """Sort ints."""
@@ -126,6 +127,14 @@ def test1_5():
     tc.assertEqual(mybinsearch(sortedstudents, 3.5, stbincmp), 2)
     tc.assertEqual(mybinsearch(sortedstudents, 3.7, stbincmp), -1)
 
+def test1_6():
+    "Checking for repeats."
+    tc = unittest.TestCase()
+    ints = [ 5, 3, 7,7, 10, 3, 9, 2]
+    intcmp = lambda x,y:  0 if x == y else (-1 if x < y else 1)
+    sortedints = mysort(ints, intcmp)
+    tc.assertEqual(sortedints, [2, 3, 3, 5, 7, 7, 9, 10])
+
 #################################################################################
 # EXERCISE 2
 #################################################################################
@@ -140,11 +149,11 @@ class PrefixSearcher():
         """
         
         lst = []
-        comparereqs = lambda x,y: 0 if x[-1] == y[-1] else (-1 if x[-1] < y[-1] else 1)
+        comparereqs = lambda x,y: 0 if x == y else (-1 if x < y else 1)
         for i in range(len(document)):
             lst.append(document[i:i+k])
-        lst = mysort(lst, comparereqs)
-        self.savedlst = lst
+        sortedlst = mysort(lst, comparereqs)
+        self.savedlst = sortedlst
         self.savedn = k
     def search(self, q):
         """
@@ -153,11 +162,11 @@ class PrefixSearcher():
         length up to n). If q is longer than n, then raise an
         Exception.
         """
-        for i in range(0, len(self.savedlst)):
-            if(self.savedlst[i] == q):
-                return True
-            if(len(q) > self.savedn):
-                raise Exception("Length of Q > Than Length of N")
+        comparereqs = lambda x,y: 0 if x == y else (-1 if x < y else 1)   
+        if(len(q) > self.savedn):
+            raise Exception("Length of Q > Than Length of N")
+        if(mybinsearch(self.savedlst,q, comparereqs) != -1):
+            return True
         return False
 
 # 30 Points
@@ -196,26 +205,33 @@ def test2_2():
 #################################################################################
 class SuffixArray():
 
+    sufxArr = []
+    storeddoc = ""
     def __init__(self, document: str):
         """
         Creates a suffix array for document (a string).
         """
-        sufxArr = []
-        for(i in range(0,len(document))):
-            sufxArr[i] = document[i]
-
+        self.storeddoc = document
+        arr = list(range(0,len(document)))
+        comparereqs = lambda x,y: 0 if document[x:] == document[y:] else (-1 if document[x:] < document[y:] else 1)
+        self.sufxArr = mysort(arr,comparereqs)
+        
     def positions(self, searchstr: str):
         """
         Returns all the positions of searchstr in the documented indexed by the suffix array.
         """
-        pass
+        count = 0
+        comparereqs = lambda x,y: 0 if self.storeddoc[x:] == self.storeddoc[y:] else (-1 if self.storeddoc[x:] < self.storeddoc[y:] else 1)
+
 
     def contains(self, searchstr: str):
         """
         Returns true of searchstr is coontained in document.
         """
-        pass
-
+        comparereqs = lambda i, checkstr: 0 if self.storeddoc[i] == checkstr else (-1 if (self.storeddoc[i] < checkstr) else 1)
+        if(self.storeddoc[self.sufxArr[mybinsearch(self.sufxArr, searchstr, comparereqs)]] == searchstr):
+            return True
+        return False
 # 40 Points
 def test3():
     """Test suffix arrays."""
