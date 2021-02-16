@@ -177,7 +177,7 @@ def test2_1():
     tc.assertFalse(p.search("Z"))
     tc.assertFalse(p.search("Y"))
     p2 = PrefixSearcher("Hello World!", 2)
-    tc.assertTrue(p2.search("lo"))
+    tc.assertFalse(p2.search("l"))
     tc.assertTrue(p2.search("ll"))
     tc.assertFalse(p2.search("lW"))
 
@@ -200,8 +200,9 @@ class SuffixArray():
         """
         Creates a suffix array for document (a string).
         """
-        pass
-
+        sufxArr = []
+        for(i in range(0,len(document))):
+            sufxArr[i] = document[i]
 
     def positions(self, searchstr: str):
         """
