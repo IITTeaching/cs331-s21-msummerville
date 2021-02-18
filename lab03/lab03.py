@@ -216,10 +216,15 @@ class SuffixArray():
         Returns all the positions of searchstr in the documented indexed by the suffix array.
         """
         comparereqs = lambda i, j: 0 if self.storeddoc[i:][:min(len(self.storeddoc)-i, len(j))] == j else (-1 if self.storeddoc[i:] < j else 1)
-        result = mybinsearch(self.sufxArr, searchstr, comparereqs)
-        if(result != -1):
-            return self.sufxArr[result]
-
+        pos = mybinsearch(self.sufxArr, searchstr, comparereqs)
+        while(pos > 0):
+            pos = pos - 1
+            text = self.storeddoc[self.sufxArr[pos]:self.sufxArr[pos]+len(searchstr)]
+            if (text != searchstr):
+                break
+        if(pos != -1):
+            return [pos + 1]
+        
     def contains(self, searchstr: str):
         """
         Returns true of searchstr is coontained in document.
@@ -260,8 +265,7 @@ def test3_2():
     tc.assertTrue(s.contains("Moby Dick"))
     tc.assertTrue(s.contains("Herman Melville"))
     tc.assertEqual(s.positions("Moby Dick"), [427])
-
-
+    
 #################################################################################
 # TEST CASES
 #################################################################################
