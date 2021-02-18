@@ -17,18 +17,16 @@ def mysort(lst: List[T], compare: Callable[[T, T], int]) -> List[T]:
     right element, 1 if the left is larger than the right, and 0 if the two
     elements are equal.
     """
-    for i in range(0, len(lst)):
-        temp = lst[i]
-        min_index = -1
-        for j in range(i+1,len(lst)):
-            comparetemp = lst[j]
-            if(compare(comparetemp,temp) < 0):
-                if(min_index == -1 or lst[min_index] > lst[j]):
-                    min_index = j
-        if(min_index != -1):
-            savedcomparetemp = lst[min_index]
-            lst[min_index] = temp
-            lst[i] = savedcomparetemp
+    n = len(lst)
+    for i in range(n-1):
+        min_val = i
+        for j in range(i+1,n):
+            if(compare(lst[j],lst[min_val]) < 0):
+                    min_val = j
+        if (min_val != i):
+            temp = lst[i]
+            lst[i] = lst[min_val]
+            lst[min_val] = temp
     return lst
 
 def mybinsearch(lst: List[T], elem: S, compare: Callable[[T, S], int]) -> int:
@@ -205,33 +203,32 @@ def test2_2():
 #################################################################################
 class SuffixArray():
 
-    sufxArr = []
-    storeddoc = ""
     def __init__(self, document: str):
         """
         Creates a suffix array for document (a string).
         """
+        self.sorteddoc = list(document)
+        comparereqs2 = lambda x,y: 0 if x == y else (-1 if x < y else 1) 
+        self.sorteddoc = mysort(self.sorteddoc,comparereqs2)
         self.storeddoc = document
-        arr = list(range(0,len(document)))
-        comparereqs = lambda x,y: 0 if document[x:] == document[y:] else (-1 if document[x:] < document[y:] else 1)
-        self.sufxArr = mysort(arr,comparereqs)
+        lst = list(range(0,len(document))) 
+        self.sufxArr = mysort(lst, lambda x,y: 0 if document[x:] == document[y:] else (-1 if document[x:] < document[y:] else 1))
         
     def positions(self, searchstr: str):
         """
         Returns all the positions of searchstr in the documented indexed by the suffix array.
         """
-        count = 0
-        comparereqs = lambda x,y: 0 if self.storeddoc[x:] == self.storeddoc[y:] else (-1 if self.storeddoc[x:] < self.storeddoc[y:] else 1)
 
 
     def contains(self, searchstr: str):
         """
         Returns true of searchstr is coontained in document.
         """
-        comparereqs = lambda i, checkstr: 0 if self.storeddoc[i] == checkstr else (-1 if (self.storeddoc[i] < checkstr) else 1)
-        if(self.storeddoc[self.sufxArr[mybinsearch(self.sufxArr, searchstr, comparereqs)]] == searchstr):
+        comparereqs = lambda i, j: 0 if self.storeddoc[i:][:min(len(self.storeddoc)-i, len(j))] == j else (-1 if self.storeddoc[i:] < j else 1)
+        if(mybinsearch(self.sufxArr, searchstr, comparereqs) != -1):
             return True
         return False
+
 # 40 Points
 def test3():
     """Test suffix arrays."""
