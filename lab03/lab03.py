@@ -207,9 +207,6 @@ class SuffixArray():
         """
         Creates a suffix array for document (a string).
         """
-        self.sorteddoc = list(document)
-        comparereqs2 = lambda x,y: 0 if x == y else (-1 if x < y else 1) 
-        self.sorteddoc = mysort(self.sorteddoc,comparereqs2)
         self.storeddoc = document
         lst = list(range(0,len(document))) 
         self.sufxArr = mysort(lst, lambda x,y: 0 if document[x:] == document[y:] else (-1 if document[x:] < document[y:] else 1))
@@ -218,7 +215,10 @@ class SuffixArray():
         """
         Returns all the positions of searchstr in the documented indexed by the suffix array.
         """
-
+        comparereqs = lambda i, j: 0 if self.storeddoc[i:][:min(len(self.storeddoc)-i, len(j))] == j else (-1 if self.storeddoc[i:] < j else 1)
+        result = mybinsearch(self.sufxArr, searchstr, comparereqs)
+        if(result != -1):
+            return self.sufxArr[result]
 
     def contains(self, searchstr: str):
         """
