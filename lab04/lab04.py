@@ -298,8 +298,8 @@ def test_case_1():
     for i in range(len(data)):
         tc.assertEqual(lst[i], data[i])
 
-    #for i in range(0, -len(data), -1):
-    #    tc.assertEqual(lst[i], data[i])
+    for i in range(0, -len(data), -1):
+        tc.assertEqual(lst[i], data[i])
     suc()
 
 ########################################
