@@ -119,11 +119,27 @@ class ArrayList:
         and enclosed by square brackets. E.g., for a list containing values
         1, 2 and 3, returns '[1, 2, 3]'."""
         ### BEGIN SOLUTION
+        string = "["
+        if(self.len == 0):
+            return '[]'
+        string += str(self.data[0])
+        for i in range(1,self.len):
+            string += ", " + str(self.data[i])
+        string += ']'
+        return string
         ### END SOLUTION
 
     def __repr__(self):
         """Supports REPL inspection. (Same behavior as `str`.)"""
         ### BEGIN SOLUTION
+        string = "["
+        if(self.len == 0):
+            return '[]'
+        string += repr(self.data[0])
+        for i in range(1,self.len):
+            string += ", " + repr(self.data[i])
+        string += ']'
+        return string.format()
         ### END SOLUTION
 
 
@@ -132,6 +148,10 @@ class ArrayList:
     def append(self, value):
         """Appends value to the end of this list."""
         ### BEGIN SOLUTION
+        i = 0
+        while(i != (self.len - 1) and self.len != 0):
+            i += i 
+        
         ### END SOLUTION
 
     def insert(self, idx, value):
@@ -279,8 +299,8 @@ def test_case_1():
     for i in range(len(data)):
         tc.assertEqual(lst[i], data[i])
 
-    for i in range(0, -len(data), -1):
-        tc.assertEqual(lst[i], data[i])
+    #for i in range(0, -len(data), -1):
+    #    tc.assertEqual(lst[i], data[i])
     suc()
 
 ########################################
