@@ -145,7 +145,7 @@ class PrefixSearcher():
         Initializes a prefix searcher using a document and a maximum
         search string length k.
         """
-        
+
         lst = []
         comparereqs = lambda x,y: 0 if x == y else (-1 if x < y else 1)
         for i in range(len(document)):
@@ -160,7 +160,7 @@ class PrefixSearcher():
         length up to n). If q is longer than n, then raise an
         Exception.
         """
-        comparereqs = lambda x,y: 0 if x == y else (-1 if x < y else 1)   
+        comparereqs = lambda x,y: 0 if x == y else (-1 if x < y else 1)
         if(len(q) > self.savedn):
             raise Exception("Length of Q > Than Length of N")
         if(mybinsearch(self.savedlst,q, comparereqs) != -1):
@@ -208,9 +208,9 @@ class SuffixArray():
         Creates a suffix array for document (a string).
         """
         self.storeddoc = document
-        lst = list(range(0,len(document))) 
+        lst = list(range(0,len(document)))
         self.sufxArr = mysort(lst, lambda x,y: 0 if document[x:] == document[y:] else (-1 if document[x:] < document[y:] else 1))
-        
+
     def positions(self, searchstr: str):
         """
         Returns all the positions of searchstr in the documented indexed by the suffix array.
@@ -224,7 +224,7 @@ class SuffixArray():
                 break
         if(pos != -1):
             return [pos + 1]
-        
+
     def contains(self, searchstr: str):
         """
         Returns true of searchstr is coontained in document.
@@ -262,10 +262,12 @@ def test3_2():
     md_url = 'https://www.gutenberg.org/files/2701/2701-0.txt'
     md_text = urllib.request.urlopen(md_url).read().decode()
     s = SuffixArray(md_text[0:1000])
-    tc.assertTrue(s.contains("Moby Dick"))
+    tc.assertTrue(s.contains("Moby-Dick"))
     tc.assertTrue(s.contains("Herman Melville"))
-    tc.assertEqual(s.positions("Moby Dick"), [427])
-    
+    posset = set(s.positions("Moby-Dick"))
+    tc.assertEqual(posset, {355, 356})
+
+
 #################################################################################
 # TEST CASES
 #################################################################################
