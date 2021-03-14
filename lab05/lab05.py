@@ -42,18 +42,45 @@ class LinkedList:
         """Implements `x = self[idx]`"""
         assert(isinstance(idx, int))
         ### BEGIN SOLUTION
+        temp = self.head.next
+        index = self._normalize_idx(idx)
+        if (index > self.length-1):
+            raise IndexError("Index out of bounds")
+        for i in range(0, index):
+            temp = temp.next
+        return temp.val
         ### END SOLUTION
 
     def __setitem__(self, idx, value):
         """Implements `self[idx] = x`"""
         assert(isinstance(idx, int))
         ### BEGIN SOLUTION
+        temp = self.head.next
+        index = self._normalize_idx(idx)
+        if (index > self.length-1):
+            raise IndexError("Index out of bounds")
+        for i in range(0, index):
+            temp = temp.next
+        temp.val = value
         ### END SOLUTION
 
     def __delitem__(self, idx):
         """Implements `del self[idx]`"""
         assert(isinstance(idx, int))
         ### BEGIN SOLUTION
+        temp = self.head.next
+        index = self._normalize_idx(idx)
+        if (index > self.length-1):
+            raise IndexError("Index out of bounds")
+        if (index==0):
+            self.head.next =self.head.next.next
+            self.head.next.next.prior =self.head
+        else:
+            for i in range (0, index):
+                temp = temp.next
+            temp.prior.next = temp.next
+            temp.next = temp.next.next
+            self.length -=1
         ### END SOLUTION
 
     ### cursor-based access ###
@@ -62,11 +89,17 @@ class LinkedList:
         """retrieves the value at the current cursor position"""
         assert self.cursor is not self.head
         ### BEGIN SOLUTION
+        return self.cursor.val
         ### END SOLUTION
 
     def cursor_set(self, idx):
         """sets the cursor to the node at the provided index"""
         ### BEGIN SOLUTION
+        temp = self.head
+        index = self._normalize_idx(idx)
+        for i in range(0, index):
+            temp = temp.next
+        self.cursor = temp
         ### END SOLUTION
 
     def cursor_move(self, offset):
@@ -77,12 +110,28 @@ class LinkedList:
         node as needed"""
         assert len(self) > 0
         ### BEGIN SOLUTION
+        if(offset < 0):
+            temp = self.head
+            for i in range(0, offset):
+                temp = temp.prior
+            self.cursor = temp
+        elif(offset > 0):
+            temp = self.head
+            for i in range(0, offset):
+                temp = temp.next
+            self.cursor = temp
         ### END SOLUTION
 
     def cursor_insert(self, value):
         """inserts a new value after the cursor and sets the cursor to the
         new node"""
         ### BEGIN SOLUTION
+        savednext = self.cursor.next
+        inserted = self.Node(value)
+        self.cursor.next = inserted
+        self.cursor.next.next = savednext
+        self.cursor = self.cursor.next
+        self.length +=1
         ### END SOLUTION
 
     def cursor_delete(self):
@@ -90,6 +139,9 @@ class LinkedList:
         following node"""
         assert self.cursor is not self.head and len(self) > 0
         ### BEGIN SOLUTION
+        self.cursor.prior.next = self.cursor.next
+        self.cursor.next = self.cursor.next.next
+        self.length -=1
         ### END SOLUTION
 
     ### stringification ###
@@ -100,6 +152,16 @@ class LinkedList:
         and enclosed by square brackets. E.g., for a list containing values
         1, 2 and 3, returns '[1, 2, 3]'."""
         ### BEGIN SOLUTION
+        string = "["
+        if(self.length == 0):
+            return '[]'
+        temp = self.head
+        string += str(self.head.val)
+        while (temp.next != None):
+            string += ", " + str(self.temp.next.val)
+            temp = temp.next
+        string += ']'
+        return string
         ### END SOLUTION
 
     def __repr__(self):
@@ -252,14 +314,14 @@ def test_subscript_access():
     for i in range(len(data)):
         tc.assertEqual(lst[i], data[i])
 
-    data = [random.randint(1, 100) for _ in range(100)]
+    data = [random.randint(1, 100) for _ in range(20)]
     lst = LinkedList()
     for d in data:
         lst.append(d)
 
     for i in range(len(data)):
         lst[i] = data[i] = random.randint(101, 200)
-    for i in range(50):
+    for i in range(10):
         to_del = random.randrange(len(data))
         del lst[to_del]
         del data[to_del]
