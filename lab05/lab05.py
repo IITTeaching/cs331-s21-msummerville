@@ -154,13 +154,10 @@ class LinkedList:
         ### BEGIN SOLUTION
         savednext = self.cursor.next
         inserted = self.Node(value)
-        if(self.cursor.next == None):
-            inserted.prior = self.cursor
-        else:
-            lastnext = self.cursor.next
-            lastnext.prior = savednext
-            inserted.next = lastnext
-            inserted.prior = self.cursor
+        lastnext = self.cursor.next
+        lastnext.prior = savednext
+        inserted.next = lastnext
+        inserted.prior = self.cursor
         self.cursor.next = inserted
         self.length += 1
         self.cursor = inserted
@@ -400,17 +397,26 @@ class LinkedList:
     def clear(self):
         """Removes all elements from this list."""
         ### BEGIN SOLUTION
+        self.head.next = self.head
+        self.head.prior = self.head
         ### END SOLUTION
 
     def copy(self):
         """Returns a new LinkedList instance (with separate Nodes), that
         contains the same values as this list."""
         ### BEGIN SOLUTION
+        newlist = LinkedList()
+        temp = self.head
+        for i in range(0,self.length+1):
+            temp = temp.next
+            newlist.append(temp.val)
+        return newlist
         ### END SOLUTION
 
     def extend(self, other):
         """Adds all elements, in order, from other --- an Iterable --- to this list."""
         ### BEGIN SOLUTION
+
         ### END SOLUTION
 
     ### iteration ###
