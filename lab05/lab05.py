@@ -387,13 +387,13 @@ class LinkedList:
         temp = self.head
         for i in range(self.length+1):
             temp = temp.next
-            newlist.append(temp.val)
-            newlist.length +=1
+            if(temp.val != None):
+                newlist.append(temp.val)
         temp = other.head
         for i in range(other.length+1):
             temp = temp.next
-            newlist.append(temp.val)
-            newlist.length +=1
+            if(temp.val != None):
+                newlist.append(temp.val)
         return newlist
         ### END SOLUTION
 
