@@ -399,6 +399,7 @@ class LinkedList:
         ### BEGIN SOLUTION
         self.head.next = self.head
         self.head.prior = self.head
+        self.length = 0
         ### END SOLUTION
 
     def copy(self):
@@ -416,7 +417,8 @@ class LinkedList:
     def extend(self, other):
         """Adds all elements, in order, from other --- an Iterable --- to this list."""
         ### BEGIN SOLUTION
-
+        for i in other:
+            self.append(i.val)
         ### END SOLUTION
 
     ### iteration ###
@@ -424,7 +426,7 @@ class LinkedList:
         """Supports iteration (via `iter(self)`)"""
         ### BEGIN SOLUTION
         temp = self.head
-        while(temp.next != None):
+        for i in range(self.length+1):
             temp = temp.next
             yield temp.val
         ### END SOLUTION
