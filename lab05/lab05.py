@@ -411,6 +411,7 @@ class LinkedList:
         for i in range(0,self.length+1):
             temp = temp.next
             newlist.append(temp.val)
+        newlist.length -=1
         return newlist
         ### END SOLUTION
 
@@ -418,17 +419,17 @@ class LinkedList:
         """Adds all elements, in order, from other --- an Iterable --- to this list."""
         ### BEGIN SOLUTION
         for i in other:
-            self.append(i.val)
+            self.append(i)
         ### END SOLUTION
 
     ### iteration ###
     def __iter__(self):
         """Supports iteration (via `iter(self)`)"""
         ### BEGIN SOLUTION
-        temp = self.head
-        for i in range(self.length+1):
-            temp = temp.next
+        temp = self.head.next
+        for i in range(self.length):
             yield temp.val
+            temp = temp.next
         ### END SOLUTION
 
     ### reverse ###
@@ -438,6 +439,14 @@ class LinkedList:
         E.g., for [1,2,3] you shoudl return [3,2,1].
         """
         ### BEGIN SOLUTION
+        newlist = LinkedList()
+        temp = self.head.next
+        for i in range(0, self.length):
+            temp = temp.next
+        for i in range(0, self.length):
+            temp = temp.prior
+            newlist.append(temp.val)
+        return newlist
         ### END SOLUTION
 
 
