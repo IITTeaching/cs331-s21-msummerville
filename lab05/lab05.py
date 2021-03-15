@@ -86,17 +86,15 @@ class LinkedList:
             return 
         temp = self.head.next 
         index = self._normalize_idx(idx)
-        if (index > self.length):
+        if (index > self.length - 1):
            raise IndexError("Index out of bounds")
         if (index == 0): 
             temp.next = temp.next.next
             temp.next.next.prior = temp
             self.length -=1
             return 
-        for i in range(index+1): 
+        for i in range(0,index): 
             temp = temp.next
-            if temp is None: 
-                break
         temp.prior.next = temp.next
         temp.next.prior = temp.prior
         self.length -= 1
