@@ -51,6 +51,20 @@ def check_delimiters(expr):
     delim_closers = '})]>'
 
     ### BEGIN SOLUTION
+    s = Stack()
+    for i in range(0,len(expr)):
+        if(expr[i] in delim_openers):
+            s.push(expr[i])
+        if(expr[i] in delim_closers):
+            if(s.peek() == None):
+                return False
+            if(delim_openers.find(str(s.peek())) == delim_closers.find(expr[i])):
+                s.pop()
+            else:
+                return False
+    if(not s.empty()):
+        return False 
+    return True
     ### END SOLUTION
 
 ################################################################################
@@ -121,8 +135,38 @@ def infix_to_postfix(expr):
     postfix = []
     toks = expr.split()
     ### BEGIN SOLUTION
+    for token in toks:
+        if(token.isdigit()):
+            postfix.append(token)
+        else:
+            if(ops.empty() or ops.peek() == "("):
+                ops.push(token)
+            elif(token == "("):
+                ops.push(token)
+            elif(token == ")"):
+                while (not ops.empty()):
+                    pimple = ops.pop()
+                    if(pimple == "("):
+                        break
+                    postfix.append(pimple)
+            elif(prec[token] > prec[ops.peek()]):
+                ops.push(token)
+            elif(prec[token] == prec[ops.peek()]):
+                postfix.append(ops.pop())
+                ops.push(token)
+            elif(prec[token] < prec[ops.peek()]):
+                postfix.append(ops.pop())
+                while(not ops.empty() and prec[token] < prec[ops.peek()]):
+                    postfix.append(ops.pop())
+                ops.push(token)
+    while(not ops.empty()):
+        postfix.append(ops.pop())
     ### END SOLUTION
-    return ' '.join(postfix)
+    retstr = ""
+    for i in range(0,len(postfix)):
+        retstr = retstr +  str(postfix[i]) + " "
+    retstr = retstr[0:len(retstr)-1]
+    return retstr
 
 ################################################################################
 # INFIX -> POSTFIX CONVERSION - TEST CASES
@@ -161,24 +205,57 @@ class Queue:
         self.head = -1
         self.tail = -1
 
-    ### BEGIN SOLUTION
-    ### END SOLUTION
-
     def enqueue(self, val):
         ### BEGIN SOLUTION
+        if(self.data.count(None) == 0):
+            raise RuntimeError("Buffer Full")
+        if(self.head == -1):
+            self.head = 0
+            self.tail = 0
+            self.data[self.tail] = val
+        else:
+            self.tail = self.tail + 1
+            if(self.tail == len(self.data)):
+                self.tail = 0
+            self.data[self.tail] = val
         ### END SOLUTION
 
     def dequeue(self):
         ### BEGIN SOLUTION
+        if(self.empty()):
+            raise RuntimeError("Buffer Empty")
+        temp = self.data[self.head]
+        self.data[self.head] = None
+        self.head = self.head + 1
+        if(self.head == len(self.data)):
+            self.head = 0
+        if(self.empty()):
+            self.head = -1
+            self.tail = -1 
+        return temp
         ### END SOLUTION
 
     def resize(self, newsize):
         assert(len(self.data) < newsize)
         ### BEGIN SOLUTION
+        newdata = [None] * (newsize)
+        if(self.empty()):
+           self.data = newdata
+           return
+        i = 0
+        while(not self.empty()):
+            newdata[i] = self.dequeue()
+            i = i + 1
+        self.data = newdata
+        self.head = 0
+        self.tail = i - 1
         ### END SOLUTION
 
     def empty(self):
         ### BEGIN SOLUTION
+        if(self.data.count(None) == len(self.data)):
+            return True
+        return False
         ### END SOLUTION
 
     def __bool__(self):
@@ -194,6 +271,8 @@ class Queue:
 
     def __iter__(self):
         ### BEGIN SOLUTION
+        for i in range(self.head,self.tail+1):
+            yield self.data[i]
         ### END SOLUTION
 
 ################################################################################
