@@ -24,10 +24,18 @@ class Heap:
 
     def heapify(self, idx=0):
         ### BEGIN SOLUTION
+        pass
         ### END SOLUTION
 
     def add(self, x):
         ### BEGIN SOLUTION
+        self.data.append(x)
+        e = len(self.data)-1
+        while(cmp(self.data[e], self.data[self._parent(e)]) < 0):
+            temp = self.data[self._parent(e)]
+            self.data[self._parent(e)] = self.data[e]
+            self.data[e] = temp
+            e = self._parent(e)
         ### END SOLUTION
 
     def peek(self):
@@ -130,6 +138,7 @@ def test_key_heap_5():
 ################################################################################
 def running_medians(iterable):
     ### BEGIN SOLUTION
+    pass
     ### END SOLUTION
 
 ################################################################################
