@@ -22,20 +22,50 @@ class Heap:
     def _right(idx):
         return idx*2+2
 
+    def pos_exists(self, n):
+        return n < len(self)
+
+    def switch_node(self,parent, child):
+        parentval = self.data[parent]
+        childval = self.data[child]
+        self.data[parent] = childval
+        self.data[child] = parentval
+
     def heapify(self, idx=0):
         ### BEGIN SOLUTION
-        pass
+        lc = self._left(idx)
+        rc = self._right(idx)
+        if (self.pos_exists(lc)):
+            if(self.pos_exists(rc)):
+                lcval = self.data[lc]
+                rcval = self.data[rc]
+                curval = self.data[idx]
+                if (lcval > curval or rcval > curval):
+                    if(lcval > rcval):
+                        self.switch_node(idx,lc)
+                        self.heapify(lc)
+                else:
+                    self.data[idx] = rcval
+                    self.data[rc] = curval
+                    self.heapify(rc)
+
+            elif (self.pos_exists(rc)):
+                rcval = self.data[rc]
+                if (rcval > curval):
+                    self.switch_node(idx, rc)
+                    self.heapify(rc)
+            else:
+                lcval = self.data[lc]
+                if(lcval > curval):
+                    self.switch_node(idx,lc)
+                    self.heapify(lc)
+            
         ### END SOLUTION
 
     def add(self, x):
         ### BEGIN SOLUTION
         self.data.append(x)
-        e = len(self.data)-1
-        while(cmp(self.data[e], self.data[self._parent(e)]) < 0):
-            temp = self.data[self._parent(e)]
-            self.data[self._parent(e)] = self.data[e]
-            self.data[e] = temp
-            e = self._parent(e)
+        self.heapify(len(self.data) - 1)
         ### END SOLUTION
 
     def peek(self):
@@ -183,6 +213,7 @@ def test_median_3():
 ################################################################################
 def topk(items, k, keyf):
     ### BEGIN SOLUTION
+    pass
     ### END SOLUTION
 
 ################################################################################
