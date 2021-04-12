@@ -22,50 +22,32 @@ class Heap:
     def _right(idx):
         return idx*2+2
 
-    def pos_exists(self, n):
-        return n < len(self)
-
-    def switch_node(self,parent, child):
-        parentval = self.data[parent]
-        childval = self.data[child]
-        self.data[parent] = childval
-        self.data[child] = parentval
-
     def heapify(self, idx=0):
         ### BEGIN SOLUTION
-        lc = self._left(idx)
-        rc = self._right(idx)
-        if (self.pos_exists(lc)):
-            if(self.pos_exists(rc)):
-                lcval = self.data[lc]
-                rcval = self.data[rc]
-                curval = self.data[idx]
-                if (lcval > curval or rcval > curval):
-                    if(lcval > rcval):
-                        self.switch_node(idx,lc)
-                        self.heapify(lc)
-                else:
-                    self.data[idx] = rcval
-                    self.data[rc] = curval
-                    self.heapify(rc)
-
-            elif (self.pos_exists(rc)):
-                rcval = self.data[rc]
-                if (rcval > curval):
-                    self.switch_node(idx, rc)
-                    self.heapify(rc)
+        while(self._left(idx) < len(self.data)):
+            if(self._right(idx) < len(self.data) and self.key(self.data[self._right(idx)]) > self.key(self.data[self._left(idx)]) and self.key(self.data[self._right(idx)]) > self.key(self.data[idx])):
+                temp = self.data[self._right(idx)]
+                self.data[self._right(idx)] = self.data[idx]
+                self.data[idx] = temp
+                idx = self._right(idx)
+            elif(self.key(self.data[self._left(idx)]) > self.key(self.data[idx])):
+                temp = self.data[self._left(idx)]
+                self.data[self._left(idx)] = self.data[idx]
+                self.data[idx] = temp
+                idx = self._left(idx)
             else:
-                lcval = self.data[lc]
-                if(lcval > curval):
-                    self.switch_node(idx,lc)
-                    self.heapify(lc)
-            
+                break
         ### END SOLUTION
 
     def add(self, x):
         ### BEGIN SOLUTION
         self.data.append(x)
-        self.heapify(len(self.data) - 1)
+        e = len(self.data) - 1
+        while(self._parent(e) >= 0 and self.key(self.data[e]) > self.key(self.data[self._parent(e)])):
+            temp = self.data[self._parent(e)]
+            self.data[self._parent(e)] = self.data[e]
+            self.data[e] = temp
+            e = self._parent(e)
         ### END SOLUTION
 
     def peek(self):
@@ -168,7 +150,36 @@ def test_key_heap_5():
 ################################################################################
 def running_medians(iterable):
     ### BEGIN SOLUTION
-    pass
+    minHeap = Heap(lambda x:-x) 
+    maxHeap = Heap(lambda x:x)
+    medians = [iterable[0]]
+    val = iterable[0]
+    median = iterable[0]
+    for i in range(1,len(iterable)):
+        if(val > iterable[i]):
+            if(len(maxHeap.data) > len(minHeap.data)):
+                maxHeap.add(iterable[i])
+                minHeap.add(val)
+                zit = maxHeap.pop()
+                val = zit
+            else:
+                maxHeap.add(iterable[i])
+        else:
+            if(len(maxHeap.data) < len(minHeap.data)):
+                minHeap.add(iterable[i])
+                maxHeap.add(val)
+                zit = minHeap.pop()
+                val = zit  
+            else:
+                minHeap.add(iterable[i])
+        if(len(maxHeap) > len(minHeap)):
+            median = (maxHeap.peek() + val) / 2
+        elif(len(minHeap) > len(maxHeap)):
+            median = (minHeap.peek() + val) / 2
+        else:
+            median = val
+        medians.append(median)
+    return medians
     ### END SOLUTION
 
 ################################################################################
@@ -213,7 +224,18 @@ def test_median_3():
 ################################################################################
 def topk(items, k, keyf):
     ### BEGIN SOLUTION
-    pass
+    heap = Heap(lambda x:keyf(x)*-1)
+    for i in range(0,k):
+        heap.add(items[i])
+    if(len(items) > k):
+        for j in range(k,len(items)):
+            if(keyf(items[j]) > keyf(heap.peek())):
+                heap.add(items[j])
+                heap.pop()
+    newlist = [None]*k
+    for g in range(0,k):
+        newlist[k-g-1] = heap.pop()
+    return newlist
     ### END SOLUTION
 
 ################################################################################
