@@ -91,6 +91,12 @@ class HBStree:
         from creating a new version.
         """
         # BEGIN SOLUTION
+        saved = 0
+        cur = self.root_versions[-1]
+        if(cur.val > key):
+            saved = cur.left()
+        elif(cur.val < key):
+            saved = cur.right()
         # END SOLUTION
 
     def delete(self,key):
