@@ -71,6 +71,17 @@ class HBStree:
         Return True if el exists in the current version of the tree.
         """
         # BEGIN SOLUTION
+        cur = self.root_versions[-1]
+        if(cur != None):
+            while(cur.val != el):
+                if(cur.val > el):
+                    cur = cur.left()
+                elif(cur.val < el):
+                    cur = cur.right()
+                if(cur == None):
+                   return False
+            return True
+        return False
         # END SOLUTION
 
     def insert(self,key):
