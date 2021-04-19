@@ -53,6 +53,17 @@ class HBStree:
         KeyError, if key does not exist.
         """
         # BEGIN SOLUTION
+        cur = self.root_versions[-1]
+        if(cur != None):
+            while(cur.val != key):
+                if(cur.val > key):
+                    cur = cur.left()
+                elif(cur.val < key):
+                    cur = cur.right()
+                if(cur == None):
+                    raise KeyError("Key not found")
+            return key
+        raise KeyError("Key not found")
         # END SOLUTION
 
     def __contains__(self, el):
