@@ -97,6 +97,7 @@ class HBStree:
             saved = cur.left()
         elif(cur.val < key):
             saved = cur.right()
+        self.root_versions.
         # END SOLUTION
 
     def delete(self,key):
