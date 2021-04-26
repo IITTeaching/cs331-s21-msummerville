@@ -197,7 +197,7 @@ class HBStree:
             lst.append(node.val)
             preorder(node.right,lst)
         
-        i = len(self) - timetravel
+        i = len(self.root_versions) - 1 - timetravel
         version = self.root_versions[i]
         preorder(version,lst)
         
