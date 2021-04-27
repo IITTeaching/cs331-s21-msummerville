@@ -54,15 +54,15 @@ class HBStree:
         """
         # BEGIN SOLUTION
         cur = self.root_versions[-1]
-        if(cur != None):
-            while(cur.val != key):
-                if(cur.val > key):
-                    cur = cur.left()
-                elif(cur.val < key):
-                    cur = cur.right()
-                if(cur == None):
-                    raise KeyError("Key not found")
-            return key
+        while(cur):
+            if(cur == None):
+                raise KeyError("Key not found")
+            if(key == cur.val):
+                return key
+            if(key < cur.val):
+                cur = cur.left
+            else:
+                cur = cur.right
         raise KeyError("Key not found")
         # END SOLUTION
 
@@ -71,18 +71,14 @@ class HBStree:
         Return True if el exists in the current version of the tree.
         """
         # BEGIN SOLUTION
-       
-        def contains_recursive(cur,key):
-            if(cur == None):
-                return False
-            elif (cur.val > key):
-                return contains_recursive(cur.left,key)
-            elif (cur.val < key):
-                return contains_recursive(cur.right,key)
-            else:
+        cur = self.root_versions[-1]
+        while(cur):
+            if(cur.val == el):
                 return True
-        contains = contains_recursive(self.root_versions[-1], el)
-
+            if(el < cur.val):
+                cur = cur.left
+            else:
+                cur = cur.right
         return False
         # END SOLUTION
 
@@ -95,16 +91,14 @@ class HBStree:
         # BEGIN SOLUTION
 
         def insert_recursive(saved,key):
-            if (saved == None):
+            if (saved == None or saved.val == key):
                 return self.INode(key,None,None)
             if (saved.val > key):
                 son = insert_recursive(saved.left,key)
-                father = self.INode(saved.val, son, saved.right)
-                return father
+                return self.INode(saved.val, son, saved.right)
             if (saved.val < key):
                 son = insert_recursive(saved.right,key)
-                father = self.INode(saved.val, saved.left, son)
-                return father
+                return self.INode(saved.val, saved.left, son)
         
         if(not self.__contains__(key)): 
             root = insert_recursive(self.root_versions[-1],key)
@@ -118,6 +112,38 @@ class HBStree:
     def delete(self,key):
         """Delete key from the tree, creating a new version of the tree. If key does not exist in the current version of the tree, then do nothing and refrain from creating a new version."""
         # BEGIN SOLUTION
+        
+
+        def delete_recursive(saved,key):
+            if(saved.val==key):
+                if(saved.left==None):
+                    if(saved.right==None):
+                        return None
+                    else:
+                        return saved.right
+                elif(saved.right==None):
+                    return saved.left
+                else:
+                    cur=saved.left
+                    tempbool=True
+                    while(tempbool):
+                        if(cur.right!=None):
+                            cur=cur.right
+                        else:
+                            tempbool=False
+                    return self.INode(saved.val,saved.left,delete_recursive(saved.right,key))
+            elif(key<saved.val):
+                return self.INode(saved.val,delete_recursive(saved.left,key),saved.right)
+            else:
+                return self.INode(saved.val,saved.left,delete_recursive(saved.right,key))
+
+        cur=self.root_versions[-1]
+        if(self.__contains__(key)):
+            if(len(self.root_versions)<=1):
+                self.root_versions.append(None)
+                return
+            self.root_versions.append(delete_recursive(cur,key))
+            
         # END SOLUTION
 
     @staticmethod
