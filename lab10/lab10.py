@@ -15,6 +15,9 @@ class AVLTree:
 
         def rotate_left(self):
             ### BEGIN SOLUTION
+            n = self.right
+            self.val, n.val = n.val, self.val
+            self.right, n.right, self.left, n.left = n.right, n.left, n, self.left
             ### END SOLUTION
 
         @staticmethod
@@ -31,6 +34,12 @@ class AVLTree:
     @staticmethod
     def rebalance(t):
         ### BEGIN SOLUTION
+        if(height(t.right) - height(t.left) > 1):
+            return 1
+        elif(height(t.right) - height(t.left) < -1):
+            return -1
+        else:
+            0
         ### END SOLUTION
 
     def add(self, val):
