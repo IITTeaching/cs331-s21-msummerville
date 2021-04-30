@@ -15,6 +15,9 @@ class AVLTree:
 
         def rotate_left(self):
             ### BEGIN SOLUTION
+            n = self.right
+            self.val, n.val = n.val, self.val
+            self.right, n.right, self.left, n.left = n.right, n.left, n, self.left
             ### END SOLUTION
 
         @staticmethod
@@ -31,16 +34,60 @@ class AVLTree:
     @staticmethod
     def rebalance(t):
         ### BEGIN SOLUTION
+        if(height(t.right) - height(t.left) > 1):
+            t.rotate_left()
+        elif(height(t.right) - height(t.left) < -1):
+            t.rotate_right()
+        return t
         ### END SOLUTION
 
     def add(self, val):
         assert(val not in self)
         ### BEGIN SOLUTION
+        def add_helper(val,t):
+            temp = t
+            if (t == None):
+                t = self.Node(val)
+                return t
+            if (val > temp.val):
+                temp.right = add_helper(val,temp.right)
+            elif (val < temp.val):
+                temp.left = add_helper(val,temp.left)
+            temp = self.rebalance(temp)
+            self.size +=1
+            return temp
+
+        self.root = add_helper(val,self.root)
         ### END SOLUTION
 
     def __delitem__(self, val):
         assert(val in self)
         ### BEGIN SOLUTION
+
+        def del_helper(val,t):
+            temp = t
+            if(temp == None):
+                raise LookupError("Item not found")
+            if(val == temp.val):
+                if (temp.right == None and temp.left == None):
+                    return None
+                elif (temp.right == None and temp.left !=None):
+                    return temp.left
+                elif (temp.left == None and temp.right !=None):
+                    return temp.right
+                elif (temp.left != None and temp.right != None):
+                    while (temp.right != None):
+                        temp = temp.right
+                    t.val = temp.val
+                    del_helper(temp.val,t.left)
+            if( val > temp.val):
+                temp.right = del_helper(val,temp.right)
+            elif(val < temp.val):
+                temp.right = del_helper(val,temp.left)
+            self.size -= 1
+            return t
+
+        self.root = del_helper(val,self.root)
         ### END SOLUTION
 
     def __contains__(self, val):
