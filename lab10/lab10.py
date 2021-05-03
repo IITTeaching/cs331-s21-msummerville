@@ -90,11 +90,12 @@ class AVLTree:
                 elif (temp.left == None and temp.right !=None):
                     return temp.right
                 elif (temp.left != None and temp.right != None):
+                    temp = temp.left
                     while (temp.right != None):
                         temp = temp.right
                     t.val = temp.val
                     del_helper(temp.val,t.left)
-            if( val > temp.val):
+            elif( val > temp.val):
                 temp.right = del_helper(val,temp.right)
             elif(val < temp.val):
                 temp.right = del_helper(val,temp.left)
