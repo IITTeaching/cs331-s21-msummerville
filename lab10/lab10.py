@@ -9,16 +9,29 @@ class AVLTree:
             self.right = right
 
         def rotate_right(self):
+            if(self.balanceFactor(self.left) > 0):
+                self.left.rotate_left()
             n = self.left
             self.val, n.val = n.val, self.val
             self.left, n.left, self.right, n.right = n.left, n.right, n, self.right
 
         def rotate_left(self):
             ### BEGIN SOLUTION
+            if(self.balanceFactor(self.right) < 0):
+                self.right.rotate_right()
             n = self.right
             self.val, n.val = n.val, self.val
             self.right, n.right, self.left, n.left = n.right, n.left, n, self.left
             ### END SOLUTION
+
+        def balanceFactor(self,t):
+            if( AVLTree.Node.height(t.right) - AVLTree.Node.height(t.left) > 0):
+                return 1
+            if( AVLTree.Node.height(t.right) - AVLTree.Node.height(t.left) < 0):
+                return -1
+            else: 
+                return 0
+
 
         @staticmethod
         def height(n):
@@ -38,6 +51,7 @@ class AVLTree:
             t.rotate_left()
         elif(height(t.right) - height(t.left) < -1):
             t.rotate_right()
+        
         return t
         ### END SOLUTION
 
@@ -221,6 +235,7 @@ def test_key_order_after_ops():
 
     for _ in range(len(vals) // 3):
         to_rem = vals.pop(random.randrange(len(vals)))
+        t.pprint()
         del t[to_rem]
 
     vals.sort()
