@@ -77,32 +77,35 @@ class AVLTree:
     def __delitem__(self, val):
         assert(val in self)
         ### BEGIN SOLUTION
-
-        def del_helper(val,t):
-            temp = t
-            if(temp == None):
-                raise LookupError("Item not found")
-            if(val == temp.val):
-                if (temp.right == None and temp.left == None):
+        def del_helper(t, val):
+            if(t == None):
+                return t
+            elif(t.val == val):
+                if(t.left == None and t.right == None):
                     return None
-                elif (temp.right == None and temp.left !=None):
-                    return temp.left
-                elif (temp.left == None and temp.right !=None):
-                    return temp.right
-                elif (temp.left != None and temp.right != None):
-                    temp = temp.left
-                    while (temp.right != None):
+                elif(t.right != None and t.left == None):
+                    return t.right
+                elif(t.left != None and t.right == None):
+                    return t.left
+                else:
+                    temp = t.left
+                    while temp.right:
                         temp = temp.right
                     t.val = temp.val
-                    del_helper(temp.val,t.left)
-            elif( val > temp.val):
-                temp.right = del_helper(val,temp.right)
-            elif(val < temp.val):
-                temp.right = del_helper(val,temp.left)
-            self.size -= 1
-            return t
+                    t.left = del_helper(t.left, temp.val)
+                    AVLTree.rebalance(t)
+                    return t
+            elif val < t.val:
+                t.left = del_helper(t.left, val)
+                AVLTree.rebalance(t)
+                return t
+            else:
+                t.right = del_helper(t.right, val)
+                AVLTree.rebalance(t)
+                return t
 
-        self.root = del_helper(val,self.root)
+        self.root = del_helper(self.root, val)
+        self.size += -1
         ### END SOLUTION
 
     def __contains__(self, val):
