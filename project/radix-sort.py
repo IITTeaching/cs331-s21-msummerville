@@ -15,26 +15,26 @@ def itemsToQueues(words,i):
         q[j] = []
     for k in range(0,len(words)):
         index = len(words[k])-i-1
-        if(len(words[k]) < index):
+        if(index < 0):
             q[0].append(words[k])
         else:
             q[words[k][index]].append(words[k])
     return q
 
 def queuesToArray(ques,numWords):
-    c = [None] * numWords
-    count = 0
+    c = []
     for i in range(0,len(ques)):
-        
-
+        for j in range(0, len(ques[i])):
+            c.append(ques[i][j])
+    return c
 
 def radix_sort():
     lenest_word = calc_lenest_word()
     words = book_to_words()
     for i in range(0,lenest_word):
         c = itemsToQueues(words,i)
-        final = queuestoArray(c,len(words))
-
+        words = queuesToArray(c,len(words))
+    return words
 def calc_lenest_word():
     maxlen = 1
     lst = book_to_words()
